@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python Essentials 1 | Viva & Practice</title>
+<style>
+:root{--bg:#f4f7fb;--card:#fff;--text:#172033;--muted:#64748b;--brand:#2563eb;--brand2:#dbeafe;--border:#dbe3ef;--good:#15803d;--bad:#b91c1c}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:var(--bg);color:var(--text);line-height:1.55}
+header{background:linear-gradient(120deg,#172554,#2563eb);color:white;padding:28px 18px}
+.wrap{max-width:1050px;margin:auto}h1{margin:0 0 8px;font-size:clamp(26px,4vw,38px)}header p{margin:0;color:#e0eaff}
+main{max-width:1050px;margin:22px auto;padding:0 14px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:18px}.stat,.panel,.card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:16px;box-shadow:0 4px 14px #0f172a08}.stat strong{display:block;font-size:24px;color:var(--brand)}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0}.tab,button,select,input{font:inherit}.tab,button{border:0;border-radius:9px;padding:10px 14px;cursor:pointer;font-weight:700}.tab{background:#e2e8f0;color:#334155}.tab.active,button.primary{background:var(--brand);color:white}.tab:focus,button:focus,select:focus,input:focus{outline:3px solid #93c5fd;outline-offset:2px}
+.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0 18px}.toolbar input,.toolbar select{padding:10px;border:1px solid var(--border);border-radius:9px;background:white;min-width:180px;flex:1}
+.section-title{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.muted{color:var(--muted);font-size:14px}
+.card{margin:12px 0}.tag{display:inline-block;background:var(--brand2);color:#1d4ed8;border-radius:999px;padding:3px 9px;font-size:12px;font-weight:700;margin-bottom:8px}
+.question{font-weight:700;font-size:17px;margin:4px 0 10px}.answer{padding:12px;background:#f8fafc;border-left:4px solid var(--brand);border-radius:8px;margin-top:8px}.hidden{display:none!important}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}button.secondary{background:#e2e8f0;color:#1e293b}button:disabled{opacity:.45;cursor:not-allowed}
+.option{display:block;padding:10px;border:1px solid var(--border);border-radius:9px;margin:8px 0;cursor:pointer}.option input{margin-right:8px}.feedback{padding:10px;border-radius:8px;margin-top:10px}.correct{background:#dcfce7;color:#166534}.incorrect{background:#fee2e2;color:#991b1b}
+.progress{height:8px;background:#e2e8f0;border-radius:20px;overflow:hidden;margin:10px 0}.progress div{height:100%;background:var(--brand);width:0%}
+footer{text-align:center;color:var(--muted);padding:28px 12px;font-size:13px}
+@media(max-width:600px){.stats{grid-template-columns:1fr}.stat{padding:12px}.toolbar input,.toolbar select{min-width:100%}}
+</style>
+</head>
+<body>
+<header><div class="wrap"><h1>Python Essentials 1</h1><p>Viva Questions • Practice Programs • MCQ Quiz</p></div></header>
+<main>
+  <div class="stats">
+    <div class="stat"><strong id="vivaCount">100</strong><span>Viva questions</span></div>
+    <div class="stat"><strong id="practiceCount">10</strong><span>Practice programs</span></div>
+    <div class="stat"><strong id="mcqCount">100</strong><span>MCQ questions</span></div>
+  </div>
+  <div class="tabs" role="tablist">
+    <button class="tab active" data-tab="viva">Viva Q&amp;A</button>
+    <button class="tab" data-tab="practice">Practice Questions</button>
+    <button class="tab" data-tab="mcq">MCQ Quiz</button>
+  </div>
+
+  <section id="viva" class="panel">
+    <div class="section-title"><div><h2>Viva Questions &amp; Answers</h2><p class="muted">Answer ko hide/show karke khud se practice karo.</p></div></div>
+    <div class="toolbar">
+      <input id="searchViva" type="search" placeholder="Search question e.g. list, loop..." aria-label="Search viva questions">
+      <select id="moduleFilter" aria-label="Filter module">
+        <option value="all">All modules</option><option value="1">Module 1: Introduction</option><option value="2">Module 2: Data types & operators</option><option value="3">Module 3: Conditions, loops & lists</option><option value="4">Module 4: Functions & data processing</option>
+      </select>
+    </div>
+    <div id="vivaList"></div>
+  </section>
+
+  <section id="practice" class="panel hidden">
+    <h2>Practice Questions</h2><p class="muted">Pehle khud code likho, phir solution dekho.</p>
+    <div id="practiceList"></div>
+  </section>
+
+  <section id="mcq" class="panel hidden">
+    <div class="section-title"><div><h2>MCQ Quiz</h2><p class="muted">Answer select karo. Submit karne par score aur explanation milegi.</p></div><span id="quizProgress" class="muted">0 / 100 answered</span></div>
+    <div class="progress"><div id="progressBar"></div></div>
+    <div id="mcqList"></div>
+    <div class="actions"><button class="primary" id="submitQuiz">Submit Quiz</button><button class="secondary" id="resetQuiz">Try Again</button></div>
+    <div id="quizResult" aria-live="polite"></div>
+  </section>
+</main>
+<footer>Made for beginner viva preparation • Practise a little every day</footer>
+<script>
+const viva = [
+[1,"What is Python?","Python is a high-level, general-purpose programming language.","Python ek programming language hai; iska use automation, websites, data science aur AI mein hota hai."],
+[1,"Who developed Python?","Guido van Rossum developed Python.","Python ke creator Guido van Rossum hain."],
+[1,"When was Python first released?","Python was first released in 1991.",""],
+[1,"Why is Python popular?","It has readable syntax, is beginner-friendly, and has many libraries.",""],
+[1,"What is programming?","Programming is writing instructions for a computer to perform tasks.",""],
+[1,"What is a program?","A program is a set of instructions that tells a computer what to do.",""],
+[1,"What is an algorithm?","An algorithm is a step-by-step procedure for solving a problem.",""],
+[1,"What is a flowchart?","A flowchart is a diagram that represents the steps of an algorithm.",""],
+[1,"What is an interpreter?","An interpreter executes program instructions and reports errors during execution.",""],
+[1,"What is a compiler?","A compiler translates source code into another form, often machine code or intermediate code.",""],
+[1,"What is syntax?","Syntax is the set of rules for writing valid code.",""],
+[1,"What is source code?","Source code is the program written by a programmer.",""],
+[1,"What is debugging?","Debugging is finding and fixing errors in a program.",""],
+[1,"What is a bug?","A bug is an error or defect in a program.",""],
+[1,"What is an IDE?","IDE stands for Integrated Development Environment; it helps write, run and debug code.",""],
+[1,"What is the extension of a Python file?","The usual Python source file extension is .py.","Example: program.py"],
+[1,"Is Python case-sensitive?","Yes. name and Name are treated as different identifiers.",""],
+[1,"What is a keyword?","A keyword is a reserved word with a special meaning, such as if, else and for.",""],
+[1,"What is a comment?","A comment is text ignored during program execution. A single-line comment starts with #.","Example: # this is a comment"],
+[1,"What is indentation?","Indentation means spaces at the start of a line. Python uses it to define code blocks.",""],
+[2,"What is a variable?","A variable is a name that refers to a value.","Example: age = 18"],
+[2,"Name four basic Python data types.","int, float, str and bool.",""],
+[2,"What is an integer?","An integer is a whole number without a decimal part, such as 10 or -5.",""],
+[2,"What is a float?","A float is a number that can contain a decimal part, such as 3.5.",""],
+[2,"What is a string?","A string is a sequence of characters, usually written inside quotes.","Example: 'Hello'"],
+[2,"What is a Boolean value?","A Boolean value is either True or False.",""],
+[2,"What does type() do?","type() tells us the type of a value.","Example: type(10) gives int"],
+[2,"What does print() do?","print() displays output on the screen.",""],
+[2,"What does input() do?","input() reads text entered by the user and returns a string by default.",""],
+[2,"What is type conversion?","Type conversion changes a value from one data type to another.","Example: int('12')"],
+[2,"What are operators?","Operators perform operations on values or variables.",""],
+[2,"Name the arithmetic operators.","+, -, *, /, //, %, and **.",""],
+[2,"What is the difference between / and //?","/ performs division; // performs floor division.","7 / 2 is 3.5; 7 // 2 is 3"],
+[2,"What does % do?","The modulus operator % returns the remainder after division.","7 % 2 gives 1"],
+[2,"What does ** do?","It raises a number to a power.","2 ** 3 gives 8"],
+[2,"What is an assignment operator?","It assigns a value to a variable, for example x = 10.",""],
+[2,"What are comparison operators?","They compare values and return True or False.","Examples: ==, !=, >, <, >=, <="],
+[2,"What is the difference between = and ==?","= assigns a value; == checks whether two values are equal.",""],
+[2,"Name the logical operators.","and, or, not.",""],
+[2,"What is a constant in Python?","A constant is a value intended not to change; uppercase names are a convention, not enforced by Python.","Example: MAX_SIZE = 100"],
+[3,"What is a condition?","A condition is an expression that evaluates to True or False.",""],
+[3,"What is an if statement?","An if statement runs a code block when its condition is true.",""],
+[3,"What is if-else?","It chooses between one block when a condition is true and another when it is false.",""],
+[3,"What does elif mean?","elif means else if and checks another condition.",""],
+[3,"What is a nested if?","A nested if is an if statement inside another if statement.",""],
+[3,"What is a loop?","A loop repeats a block of code.",""],
+[3,"Name the two main loops in Python.","for loop and while loop.",""],
+[3,"What is a for loop?","A for loop iterates over items in an iterable, such as a list or range.",""],
+[3,"What is a while loop?","A while loop repeats while its condition remains true.",""],
+[3,"What does range() do?","range() provides a sequence of integers, commonly used in loops.","range(1, 5) gives 1, 2, 3, 4"],
+[3,"What is an infinite loop?","An infinite loop continues without reaching a stopping condition.",""],
+[3,"What does break do?","break exits the nearest enclosing loop.",""],
+[3,"What does continue do?","continue skips the rest of the current iteration and moves to the next one.",""],
+[3,"Difference between break and continue?","break exits the loop; continue skips to the next iteration.",""],
+[3,"What is a list?","A list is an ordered, mutable collection of items.","Example: [10, 20, 30]"],
+[3,"Is a list mutable?","Yes, list items can be changed, added or removed.",""],
+[3,"What is indexing?","Indexing accesses an item by position. Python sequence indexes start at 0.",""],
+[3,"What is negative indexing?","Negative indexing counts from the end; -1 means the last item.",""],
+[3,"What is slicing?","Slicing extracts part of a sequence using start and stop indexes.","a[1:3] includes indexes 1 and 2"],
+[3,"What does append() do?","append() adds an item to the end of a list.",""],
+[3,"What does insert() do?","insert() adds an item at a specified index.",""],
+[3,"What does remove() do?","remove() deletes the first matching value from a list.",""],
+[3,"What does pop() do?","pop() removes and returns an item; by default, the last item.",""],
+[3,"What does len() do?","len() returns the number of items or characters.",""],
+[3,"What does sort() do?","sort() sorts a list in place.",""],
+[3,"What is a nested list?","A nested list is a list containing another list.","Example: [[1, 2], [3, 4]]"],
+[3,"What are logical operators?","and, or and not combine or reverse Boolean conditions.",""],
+[3,"What are bitwise operators?","They operate on the binary representation of integers.","Examples: &, |, ^, ~, <<, >>"],
+[3,"What is bubble sort?","Bubble sort repeatedly compares adjacent items and swaps them when they are in the wrong order.",""],
+[4,"What is a function?","A function is a reusable block of code that performs a task.",""],
+[4,"Which keyword defines a function?","The def keyword defines a function.",""],
+[4,"How do you call a function?","Write the function name followed by parentheses, such as greet().",""],
+[4,"What is a parameter?","A parameter is a name in the function definition that receives a value.",""],
+[4,"What is an argument?","An argument is a value passed to a function when it is called.",""],
+[4,"What does return do?","return sends a result back to the code that called the function.",""],
+[4,"Difference between print and return?","print displays information; return passes a result back to the caller.",""],
+[4,"What is a built-in function?","A function provided by Python, such as print(), len() or type().",""],
+[4,"What is recursion?","Recursion is when a function calls itself.",""],
+[4,"What is a local variable?","A local variable is defined within a function and is generally accessible in that scope.",""],
+[4,"What is a global variable?","A global variable is defined outside functions at module level.",""],
+[4,"What is a tuple?","A tuple is an ordered, immutable collection.","Example: (10, 20, 30)"],
+[4,"Is a tuple mutable?","No, a tuple is immutable.",""],
+[4,"Difference between list and tuple?","A list is mutable and commonly uses []; a tuple is immutable and commonly uses ().",""],
+[4,"Can a tuple contain different data types?","Yes, for example (10, 'Hello', True).",""],
+[4,"What is a dictionary?","A dictionary stores key-value pairs.","Example: {'name': 'Raj'}"],
+[4,"How do you access a dictionary value?","Use its key, for example student['name'].",""],
+[4,"Are dictionary keys unique?","Yes, dictionary keys are unique; assigning an existing key updates its value.",""],
+[4,"What does keys() do?","It returns a view of the dictionary's keys.",""],
+[4,"What does values() do?","It returns a view of the dictionary's values.",""],
+[4,"What does items() do?","It returns a view of the dictionary's key-value pairs.",""],
+[4,"What is an exception?","An exception is an event/error during execution that can interrupt normal program flow.",""],
+[4,"What is exception handling?","Exception handling lets a program respond to runtime errors gracefully.",""],
+[4,"What do try and except do?","try contains code that may raise an exception; except handles a matching exception.",""],
+[4,"What does finally do?","finally normally runs whether an exception occurred or not; it is often used for cleanup.",""],
+[4,"What is ZeroDivisionError?","It occurs when division by zero is attempted.",""],
+[4,"What is ValueError?","It occurs when a value has an appropriate general type but an unacceptable value.",""],
+[4,"What is TypeError?","It occurs when an operation or function is used with an inappropriate type.",""],
+[4,"What does pass do?","pass is a placeholder statement that performs no action.",""],
+[4,"Why is exception handling important?","It helps a program handle errors and remain more reliable.",""],
+[4,"What is data processing?","Data processing means collecting, organizing or transforming data into a useful form.",""]
+];
+const practice = [
+["Print Hello World","Write a program that prints Hello World.","print('Hello World')","Hello World"],
+["Add two numbers","Store 10 and 20 in variables and print their sum.","a = 10\nb = 20\nprint(a + b)","30"],
+["Even or odd","Check whether 6 is even or odd.","n = 6\nif n % 2 == 0:\n    print('Even')\nelse:\n    print('Odd')","Even"],
+["Greatest of two numbers","Print the greater of 10 and 20.","a = 10\nb = 20\nif a > b:\n    print(a)\nelse:\n    print(b)","20"],
+["Print numbers 1 to 5","Use a for loop to print numbers from 1 to 5.","for i in range(1, 6):\n    print(i)","1, 2, 3, 4, 5 (each on a new line)"],
+["Sum from 1 to 5","Use a loop to calculate the sum of numbers 1 through 5.","total = 0\nfor i in range(1, 6):\n    total += i\nprint(total)","15"],
+["Multiplication table","Print the multiplication table of 5 from 1 to 10.","n = 5\nfor i in range(1, 11):\n    print(n, 'x', i, '=', n * i)","Starts at 5 x 1 = 5 and ends at 5 x 10 = 50"],
+["Factorial","Find the factorial of 5 using a loop.","n = 5\nfact = 1\nfor i in range(1, n + 1):\n    fact *= i\nprint(fact)","120"],
+["Function to add","Create a function that returns the sum of two numbers.","def add(a, b):\n    return a + b\n\nprint(add(5, 3))","8"],
+["Largest list item","Find the largest value in [10, 25, 5, 40].","numbers = [10, 25, 5, 40]\nprint(max(numbers))","40"]
+];
+const mcqs = [
+["Which language is Python?","A database","A programming language","An operating system","A browser",1,"Python is a high-level programming language."],
+["Who developed Python?","Dennis Ritchie","James Gosling","Guido van Rossum","Tim Berners-Lee",2,"Guido van Rossum created Python."],
+["Which function displays output?","input()","show()","print()","type()",2,"print() displays output."],
+["Which symbol begins a single-line comment?","//","#","/*","@",1,"Python comments begin with #."],
+["What is a Python file extension?"," .java",".cpp",".py",".html",2,"Python source files usually end in .py."],
+["What is the type of 4?","str","int","float","bool",1,"4 is an integer."],
+["What is the type of 4.5?","int","str","float","bool",2,"4.5 is a float."],
+["Which value is Boolean?","'True'","1.5","True","'False'",2,"True without quotes is a Boolean value."],
+["What does input() return by default?","int","float","str","bool",2,"input() returns a string by default."],
+["What is 7 % 2?","3","3.5","1","0",2,"% returns the remainder; 7 divided by 2 leaves 1."],
+["What is 2 ** 3?","5","6","8","9",2,"** is the exponentiation operator."],
+["Which operator checks equality?","=","==","!=","<=",1,"== compares values."],
+["What does range(1, 4) produce?","1,2,3,4","1,2,3","0,1,2,3","2,3,4",1,"The stop value 4 is excluded."],
+["Which statement exits a loop?","skip","continue","break","pass",2,"break exits the nearest enclosing loop."],
+["Which statement skips to the next iteration?","break","continue","return","exit",1,"continue skips the rest of the current iteration."],
+["Which brackets commonly define a list?","()","{}","[]","<>",2,"Lists use square brackets."],
+["What is the first index of a list?","0","1","-1","2",0,"Python indexing starts at 0."],
+["Which keyword defines a function?","function","fun","def","define",2,"Use def to define a function."],
+["Which collection is immutable?","list","dictionary","tuple","set",2,"A tuple cannot be changed after creation."],
+["Which block handles an exception?","try","except","if","for",1,"except handles a matching exception raised in try."]
+,
+["Which function returns the number of items in a list?", "size()", "countall()", "len()", "items()", 2, "len() returns the number of items."],
+["What is the output of print(2 + 3 * 4)?", "20", "14", "24", "9", 1, "Multiplication happens before addition: 2 + 12 = 14."],
+["What is the output of print(10 == 10)?", "True", "False", "10", "Error", 0, "10 is equal to 10, so the result is True."],
+["Which is a valid Python variable name?", "2name", "first-name", "first_name", "class", 2, "first_name is valid; names cannot start with a digit or use a hyphen, and class is a keyword."],
+["Which data type stores whole numbers?", "float", "int", "str", "bool", 1, "int stores integer values."],
+["Which data type stores text?", "str", "int", "bool", "float", 0, "str is used for text."],
+["What is the output of print(int('5') + 2)?", "52", "7", "5", "Error", 1, "int('5') converts the string to integer 5; 5 + 2 = 7."],
+["Which operator means 'not equal to'?", "=", "==", "!=", "<>", 2, "!= checks whether values are not equal."],
+["What is the output of print(9 // 2)?", "4.5", "5", "4", "1", 2, "Floor division gives 4."],
+["What is the output of print(3 ** 2)?", "6", "9", "8", "5", 1, "3 squared is 9."],
+["What does bool(0) return?", "True", "False", "0", "None", 1, "Zero is falsey in Python."],
+["Which value represents no value?", "void", "null", "None", "empty", 2, "Python uses None to represent the absence of a value."],
+["Which function converts a value to a string?", "str()", "string()", "text()", "char()", 0, "str() converts a value to a string."],
+["What is the output of print('Py' + 'thon')?", "Py thon", "Python", "Py+thon", "Error", 1, "The + operator concatenates strings."],
+["What is the output of print('ha' * 3)?", "hahaha", "ha3", "ha ha ha", "Error", 0, "String repetition repeats the string three times."],
+["Which symbol is used for exponentiation?", "^", "**", "//", "%", 1, "** performs exponentiation; ^ is bitwise XOR."],
+["What does input() return by default?", "Integer", "Boolean", "String", "Float", 2, "input() returns text as a string by default."],
+["Which converts input text into an integer?", "input()", "int()", "float()", "type()", 1, "int() converts a suitable value to an integer."],
+["What is the result of 8 % 3?", "2", "3", "1", "0", 0, "8 divided by 3 leaves remainder 2."],
+["Which operator checks whether two values are equal?", "=", "==", ">", "and", 1, "== checks equality."],
+["What is the output of print(not True)?", "True", "False", "None", "Error", 1, "not reverses a Boolean value."],
+["What is the result of True and False?", "True", "False", "None", "1", 1, "and is true only when both operands are true."],
+["What is the result of True or False?", "True", "False", "None", "0", 0, "or is true when at least one operand is true."],
+["Which statement chooses between conditions?", "for", "if", "def", "try", 1, "if is used for conditional execution."],
+["What keyword provides an alternative branch after if?", "otherwise", "elif", "then", "case", 1, "elif checks another condition."],
+["What is printed by: if 3 > 1: print('Yes')?", "No", "Yes", "True", "Error", 1, "3 is greater than 1, so Yes is printed."],
+["Which loop is commonly used to iterate over a list?", "for", "if", "def", "try", 0, "A for loop iterates over list items."],
+["How many values are produced by range(5)?", "4", "5", "6", "0", 1, "range(5) produces 0, 1, 2, 3, 4: five values."],
+["What does range(2, 6) produce?", "2,3,4,5,6", "1,2,3,4,5", "2,3,4,5", "3,4,5,6", 2, "The stop value 6 is excluded."],
+["Which keyword stops the nearest loop?", "stop", "break", "continue", "pass", 1, "break exits the loop."],
+["Which keyword skips to the next loop iteration?", "break", "skip", "continue", "pass", 2, "continue skips the remaining body for the current iteration."],
+["What can cause a while loop to run forever?", "Its condition never becomes false", "Using print()", "Using an integer", "Using comments", 0, "If the condition stays true, the loop may never end."],
+["Which brackets are used for a list?", "{}", "()", "[]", "//", 2, "Lists are written with square brackets."],
+["What is the index of the first list element?", "1", "0", "-2", "It has no index", 1, "Python sequence indexing starts at zero."],
+["For values = [4, 8, 12], what is values[1]?", "4", "8", "12", "1", 1, "Index 1 refers to the second element, 8."],
+["For values = [4, 8, 12], what is values[-1]?", "4", "8", "12", "-1", 2, "-1 refers to the last item."],
+["What does append(7) do to a list?", "Adds 7 at the end", "Adds 7 at the start", "Sorts the list", "Deletes 7", 0, "append() adds an item at the end."],
+["What does list.pop() do by default?", "Adds an item", "Removes and returns the last item", "Sorts the list", "Copies the list", 1, "pop() removes and returns the last item by default."],
+["Which list method sorts a list in place?", "order()", "sort()", "sortedlist()", "arrange()", 1, "sort() changes the list in place."],
+["Can a Python list contain different data types?", "No, never", "Yes", "Only numbers", "Only strings", 1, "Lists can contain values of different types."],
+["Which list slice selects indexes 1 and 2?", "a[1:2]", "a[1:3]", "a[0:2]", "a[2:3]", 1, "The stop index is excluded, so a[1:3] selects indexes 1 and 2."],
+["Which collection is ordered and mutable?", "Tuple", "List", "String", "Integer", 1, "Lists are ordered and mutable."],
+["Which keyword defines a function?", "func", "define", "def", "function", 2, "Python function definitions begin with def."],
+["What happens when a function is called?", "Its code is executed", "Python deletes it", "It becomes a comment", "Nothing ever happens", 0, "Calling a function runs its body."],
+["What does return do in a function?", "Prints automatically", "Sends a result to the caller", "Repeats a loop", "Defines a variable", 1, "return passes a result back to the caller."],
+["What is a function parameter?", "A value in a function call only", "A name in a function definition", "A loop keyword", "A data type", 1, "Parameters appear in the function definition."],
+["What is an argument?", "A value passed to a function", "A function name only", "A comment", "A module", 0, "Arguments are supplied when calling a function."],
+["Which is a built-in Python function?", "repeat()", "display_text()", "len()", "makevar()", 2, "len() is built into Python."],
+["What is recursion?", "A function calling itself", "A list sorting itself", "A variable changing type", "A syntax error", 0, "A recursive function calls itself."],
+["What does a function return if it has no return statement?", "0", "False", "None", "An empty string", 2, "A function returns None if it finishes without returning another value."],
+["Which keyword creates an anonymous function?", "def", "lambda", "anon", "func", 1, "lambda creates a small anonymous function."],
+["Which collection is immutable?", "List", "Dictionary", "Tuple", "Set", 2, "Tuples cannot be changed after creation."],
+["Which brackets commonly represent a tuple?", "[]", "()", "{}", "<>", 1, "Tuples are commonly written with parentheses."],
+["How do you create a one-item tuple?", "(5)", "[5]", "(5,)", "{5}", 2, "A comma is required for a one-item tuple: (5,)."],
+["Which data structure stores key-value pairs?", "List", "Dictionary", "Tuple", "String", 1, "A dictionary stores key-value pairs."],
+["How do you access the value for key 'age' in d?", "d.age", "d(age)", "d['age']", "d->age", 2, "Dictionary values can be accessed using their keys."],
+["What happens if you assign a new value to an existing dictionary key?", "A duplicate key is added", "The value is updated", "The dictionary is deleted", "Python always errors", 1, "An existing key's value is updated."],
+["Which method returns dictionary keys?", "values()", "items()", "keys()", "getkeys()", 2, "keys() returns a view of the keys."],
+["Which dictionary method returns key-value pairs?", "items()", "pairs()", "both()", "entries_list()", 0, "items() returns key-value pairs."],
+["Can dictionary keys be duplicated?", "Yes, as separate keys", "No, keys are unique", "Only string keys", "Only integer keys", 1, "Each dictionary key is unique."],
+["What is an exception?", "A runtime event/error that interrupts normal flow", "A comment", "A variable name", "A loop", 0, "Exceptions can interrupt normal execution."],
+["Which block contains code that may raise an exception?", "except", "try", "finally", "pass", 1, "Potentially risky code is placed in try."],
+["Which block handles a matching exception?", "try", "except", "for", "def", 1, "except handles a matching exception."],
+["Which exception may occur when dividing by zero?", "NameError", "IndexError", "ZeroDivisionError", "KeyError", 2, "Division by zero raises ZeroDivisionError for ordinary numeric division."],
+["Which exception can occur when converting 'hello' to int?", "ValueError", "ZeroDivisionError", "KeyError", "IndentationError", 0, "int('hello') raises ValueError."],
+["What is the purpose of finally?", "Runs only if there is no error", "Normally runs whether or not an exception occurs", "Defines a function", "Repeats the program", 1, "finally is commonly used for cleanup."],
+["What does pass do?", "Stops Python", "Does nothing as a placeholder", "Prints a message", "Raises every exception", 1, "pass is a placeholder statement."],
+["Which error can occur when using an undefined variable name?", "NameError", "ValueError", "ZeroDivisionError", "SyntaxWarning only", 0, "An undefined name commonly raises NameError."],
+["Which error may occur when accessing a missing list index?", "KeyError", "IndexError", "NameError", "TypeError", 1, "An out-of-range list index raises IndexError."],
+["Which statement imports a module?", "include math", "using math", "import math", "load math", 2, "import loads a module for use."],
+["Which module includes common mathematical functions?", "math", "random_text", "keyboard", "screen", 0, "The math module provides mathematical functions."],
+["Which function returns the largest item in a collection?", "min()", "max()", "top()", "largest()", 1, "max() returns the largest item."],
+["Which function returns the smallest item?", "min()", "max()", "low()", "smallest()", 0, "min() returns the smallest item."],
+["What is the output of len('Python')?", "5", "6", "7", "Error", 1, "Python has six characters."],
+["What is the output of bool('')?", "True", "False", "None", "Error", 1, "An empty string is falsey."],
+["Which is a valid string literal?", "Hello", "'Hello'", "<Hello>", "#Hello as code", 1, "Text literals need quotes."],
+["What does the in operator often check?", "Membership in a sequence or collection", "Power", "Assignment", "Function definition", 0, "in tests membership, such as whether an item is in a list."],
+["What is the result of 5 > 2?", "False", "True", "5", "2", 1, "Five is greater than two."],
+["Which operator combines strings?", "* only", "+", "% only", "//", 1, "+ concatenates strings."],
+["What does upper() do to a string?", "Makes letters uppercase", "Makes letters lowercase", "Removes spaces only", "Sorts words", 0, "upper() returns an uppercase version of the string."],
+["What does lower() do to a string?", "Makes letters uppercase", "Makes letters lowercase", "Converts to integer", "Splits a list", 1, "lower() returns a lowercase version of the string."],
+["Are strings mutable in Python?", "Yes", "No, strings are immutable", "Only if long", "Only in loops", 1, "Strings cannot be changed in place."],
+["What does split() usually do to a string?", "Splits it into a list of parts", "Joins two lists", "Makes it uppercase", "Sorts characters", 0, "split() returns a list of substrings."],
+["What does strip() do to a string by default?", "Removes whitespace from both ends", "Removes all vowels", "Reverses the string", "Converts it to a list of characters", 0, "strip() removes leading and trailing whitespace by default."],
+["Which function gives an object's identity-related unique integer during its lifetime?", "id()", "type()", "len()", "print()", 0, "id() returns an identity value for an object."],
+["Which keyword is used to create a loop over a condition?", "while", "if", "class", "return", 0, "while repeats while its condition is true."],
+["Which keyword can be used to exit a function early with a result?", "break", "return", "continue", "pass", 1, "return exits the function and optionally provides a value."],
+["What is the output of print(3 == '3')?", "True", "False", "3", "Error", 1, "An integer and a string are not equal."],
+["Which operator means logical AND?", "& only", "and", "&&", "AND()", 1, "Python's logical AND keyword is and."],
+["Which operator means logical OR?", "or", "||", "OR()", "either", 0, "Python's logical OR keyword is or."],
+["Which is the correct way to start an if block?", "if x > 1 then", "if x > 1:", "if (x > 1) do", "when x > 1:", 1, "Python uses a colon after the condition."],
+["What is a syntax error?", "Code that breaks language grammar rules", "A correct output", "A list item", "A loop ending normally", 0, "Syntax errors occur when code violates Python's grammar."],
+["What is a module?", "A Python file containing code that can be imported", "A variable only", "A loop condition", "A type of operator", 0, "A module is a file or namespace of Python definitions and code."],
+["What is a library in programming?", "A collection of reusable code", "Only a text file", "A keyboard", "An error message", 0, "Libraries provide reusable functions and tools."],
+["What is the output of print(list(range(3)))?", "[1, 2, 3]", "[0, 1, 2]", "[0, 1, 2, 3]", "range(3)", 1, "range(3) generates 0, 1, 2; list() makes them a list."],
+["What is the output of print([1, 2] + [3])?", "[1, 2, 3]", "[1, 2, [3]]", "6", "Error", 0, "List + list concatenates the lists."],
+["What does del do?", "Deletes a name or item reference", "Always prints a value", "Defines a function", "Handles exceptions", 0, "del removes a name binding or an item/slice from a container."],
+["What is data processing?", "Transforming or organizing data into a useful form", "Only printing Hello", "Creating comments", "Closing Python", 0, "Data processing makes data useful or meaningful."],
+["What is the purpose of testing code?", "To check whether it behaves as expected", "To make all variables global", "To remove all functions", "To change Python's syntax", 0, "Testing helps verify expected behaviour and find defects."],
+["What is pseudocode?", "A plain-language outline of an algorithm", "Executable Python only", "A data type", "An exception", 0, "Pseudocode describes program logic without strict language syntax."]
+];
+mcqs.length = 100; // Keep exactly 100 MCQs for practice.
+document.getElementById("vivaCount").textContent = viva.length;
+document.getElementById("practiceCount").textContent = practice.length;
+document.getElementById("mcqCount").textContent = mcqs.length;
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+function renderViva(){
+ const term=document.getElementById("searchViva").value.toLowerCase();
+ const mod=document.getElementById("moduleFilter").value;
+ const list=document.getElementById("vivaList");
+ const found=viva.filter(q=>(mod==="all"||String(q[0])===mod)&&q.slice(1).join(" ").toLowerCase().includes(term));
+ list.innerHTML=found.length?found.map((q,i)=>`<article class="card"><span class="tag">Module ${q[0]}</span><div class="question">Q${viva.indexOf(q)+1}. ${esc(q[1])}</div><button class="secondary" onclick="toggleAnswer(${viva.indexOf(q)})" id="btn-${viva.indexOf(q)}">Show answer</button><div class="answer hidden" id="ans-${viva.indexOf(q)}"><strong>Answer:</strong> ${esc(q[2])}${q[3]?`<p class="muted">${esc(q[3])}</p>`:""}</div></article>`).join(""):`<p>No matching questions found.</p>`;
+}
+function toggleAnswer(i){const el=document.getElementById("ans-"+i);const btn=document.getElementById("btn-"+i);el.classList.toggle("hidden");btn.textContent=el.classList.contains("hidden")?"Show answer":"Hide answer";}
+function renderPractice(){
+ document.getElementById("practiceList").innerHTML=practice.map((p,i)=>`<article class="card"><span class="tag">Practice ${i+1}</span><div class="question">${esc(p[0])}</div><p>${esc(p[1])}</p><button class="secondary" onclick="togglePractice(${i})" id="pbtn-${i}">Show solution</button><div id="psol-${i}" class="answer hidden"><strong>Code:</strong><pre><code>${esc(p[2])}</code></pre><strong>Expected output:</strong><pre>${esc(p[3])}</pre></div></article>`).join("");
+}
+function togglePractice(i){const el=document.getElementById("psol-"+i);const btn=document.getElementById("pbtn-"+i);el.classList.toggle("hidden");btn.textContent=el.classList.contains("hidden")?"Show solution":"Hide solution";}
+function renderMcq(){
+ document.getElementById("mcqList").innerHTML=mcqs.map((q,i)=>`<article class="card" id="mcq-card-${i}"><span class="tag">Question ${i+1}</span><div class="question">${esc(q[0])}</div>${q.slice(1,5).map((opt,j)=>`<label class="option"><input type="radio" name="mcq-${i}" value="${j}" onchange="updateProgress()"> ${String.fromCharCode(65+j)}. ${esc(opt)}</label>`).join("")}<div class="feedback hidden" id="fb-${i}"></div></article>`).join("");
+ updateProgress();
+}
+function updateProgress(){const n=mcqs.filter((q,i)=>document.querySelector(`input[name="mcq-${i}"]:checked`)).length;document.getElementById("quizProgress").textContent=`${n} / ${mcqs.length} answered`;document.getElementById("progressBar").style.width=(n/mcqs.length*100)+"%";}
+document.getElementById("submitQuiz").addEventListener("click",()=>{
+ let score=0;
+ mcqs.forEach((q,i)=>{const selected=document.querySelector(`input[name="mcq-${i}"]:checked`);const fb=document.getElementById("fb-"+i);fb.classList.remove("hidden","correct","incorrect");if(selected&&Number(selected.value)===q[5]){score++;fb.classList.add("correct");fb.innerHTML="Correct! "+esc(q[6]);}else{fb.classList.add("incorrect");fb.innerHTML="Correct answer: "+String.fromCharCode(65+q[5])+". "+esc(q[q[5]+1])+". "+esc(q[6]);}});
+ document.getElementById("quizResult").innerHTML=`<div class="card"><h3>Your score: ${score} / ${mcqs.length}</h3><p>${score>=16?"Great work! Revise once more to make it stronger.":"Keep practising. Review the explanations and try again."}</p></div>`;
+});
+document.getElementById("resetQuiz").addEventListener("click",()=>{renderMcq();document.getElementById("quizResult").innerHTML="";});
+document.getElementById("searchViva").addEventListener("input",renderViva);
+document.getElementById("moduleFilter").addEventListener("change",renderViva);
+document.querySelectorAll(".tab").forEach(btn=>btn.addEventListener("click",()=>{document.querySelectorAll(".tab").forEach(b=>b.classList.remove("active"));btn.classList.add("active");document.querySelectorAll("main > section").forEach(s=>s.classList.add("hidden"));document.getElementById(btn.dataset.tab).classList.remove("hidden");}));
+renderViva();renderPractice();renderMcq();
+</script>
+</body>
+</html>
